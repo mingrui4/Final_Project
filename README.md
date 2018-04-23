@@ -6,9 +6,9 @@ DELETE these lines from TEMPLATE up.
 
 TEMPLATE for your report:
 
-# Title: 
+# Title: Four-in-row game
 
-## Team Member(s):
+## Team Member(s): Songwei Feng, Jinlin Zeng, Mingrui Yin, Ni Lin
 (Note: Don't put your email addresses here (which is public).  If a student wants their NAME hidden as well, due to optional FERPA regulations, they can be listed purely by their GitHub ID).
 
 # Monte Carlo Simulation Scenario & Purpose:
