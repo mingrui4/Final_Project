@@ -8,8 +8,8 @@ TEMPLATE for your report:
 
 # Title: Four-in-row game
 
-## Team Member(s): Songwei Feng, Jinlin Zeng, Mingrui Yin, Ni Lin
-(Note: Don't put your email addresses here (which is public).  If a student wants their NAME hidden as well, due to optional FERPA regulations, they can be listed purely by their GitHub ID).
+## Team Member(s): 
+Songwei Feng, Jinlin Zeng, Mingrui Yin, Ni Lin
 
 # Monte Carlo Simulation Scenario & Purpose:
 (be sure to read the instructions given in course Moodle)
@@ -24,4 +24,10 @@ List and describe your simulation's variables of uncertainty (where you're using
 ## Instructions on how to use the program:
 
 ## All Sources Used:
+Software: Python 3.6 (PyCharm)
+Algorithm: Monte Carlo Tree Search
 
+## References:
+1. Jeff Bradberry “Introduction to Monte Carlo Tree Search”,Github.https://jeffbradberry.com/posts/2015/09/intro-to-monte-carlo-tree-search/.
+2. Gelly, S., & Silver, D. (2011). Monte-Carlo tree search and rapid action value estimation in computer Go. Artificial Intelligence, 175(11), 1856-1875.
+3. Magnuson, M. (2015). Monte Carlo Tree Search and Its Applications. Scholarly Horizons: University of Minnesota, Morris Undergraduate Journal, 2(2), 4.
