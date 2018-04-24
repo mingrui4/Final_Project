@@ -15,7 +15,7 @@ Songwei Feng, Jinlin Zeng, Mingrui Yin, Ni Lin
 
 
 ## Simulation's variables of uncertainty
-Each step will be a different situation which will call a MCS for the decision, and the whole game is based on the collabraton of all MCS.
+Each step will be a different situation since it will call a MCTS for the decision each time, and the whole game is based on the collections of all MCTS decisions.
 
 ## Hypothesis or hypotheses before running the simulation:
 Relatively randomness - For any specific situation, the machine will first try blank spot near the stone, then try blank spot further. In our case, the decision is on the basis of the simulation, which is on and only on the basis of randomness.
@@ -25,7 +25,7 @@ Decision making - Each possible solution is given appropriate weight for evaluat
 ## Analytical Summary of your findings: (e.g. Did you adjust the scenario based on previous simulation outcomes?  What are the management decisions one could make from your simulation's output, etc.)
 
 ## Instructions on how to use the program:
-Run main.py, then there will be a board shows in the run window, choose which one to move the stone first, the player or AI. For the player, input a tuple like (1,1) to put the stone. Then move the stone one by one. When someone has four stones in a row, then the player will be the winner. If there is no place to put a new stone, the game will be draw.
+Run main.py, then there will be a board shows in the run window, choose which one to move the stone first, the player or AI. For the player, input a tuple like (1,1) to put the stone. Then move the stone one by one.The winner will be the one who first has four stones in a row. If there is no place to put a new stone, the game will be draw.
 
 ## All Sources Used:
 Software: Python 3.6 (PyCharm)
