@@ -12,12 +12,15 @@ TEMPLATE for your report:
 Songwei Feng, Jinlin Zeng, Mingrui Yin, Ni Lin
 
 # Monte Carlo Simulation Scenario & Purpose:
-(be sure to read the instructions given in course Moodle)
+
 
 ## Simulation's variables of uncertainty
-List and describe your simulation's variables of uncertainty (where you're using pseudo-random number generation). For each such variable, how did you decide the range and probability distribution to use?  Do you think it's a good representation of reality?
+Each step will be a different situation which will call a MCS for the decision, and the whole game is based on the collabraton of all MCS.
 
 ## Hypothesis or hypotheses before running the simulation:
+Relatively randomness - For any specific situation, the machine will first try blank spot near the stone, then try blank spot further. In our case, the decision is on the basis of the simulation, which is on and only on the basis of randomness.
+No human experiences involved - The program contains the idea of Exhaustive Attack method and the spirit of traversal, on the other hand, no human experience of the game is needed.
+Decision making - Each possible solution is given appropriate weight for evaluation, and make the final decision; the process of decision making which based on the traversal on the next level(s) is called back propagation.
 
 ## Analytical Summary of your findings: (e.g. Did you adjust the scenario based on previous simulation outcomes?  What are the management decisions one could make from your simulation's output, etc.)
 
@@ -26,6 +29,7 @@ Run main.py, then there will be a board shows in the run window, choose which on
 
 ## All Sources Used:
 Software: Python 3.6 (PyCharm)
+
 Algorithm: Monte Carlo Tree Search
 
 ## References:
