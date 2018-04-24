@@ -27,7 +27,9 @@ Each step will be a different situation since it will call a MCTS for the decisi
 ## Hypothesis or hypotheses before running the simulation:
 
 Relatively randomness - For any specific situation, the machine will first try blank spot near the stone, then try blank spot further. In our case, the decision is on the basis of the simulation, which is on and only on the basis of randomness.
+
 No human experiences involved - The program contains the idea of Exhaustive Attack method and the spirit of traversal, on the other hand, no human experience of the game is needed.
+
 Decision making - Each possible solution is given appropriate weight for evaluation, and make the final decision; the process of decision making which based on the traversal on the next level(s) is called back propagation.
 
 ## Analytical Summary of your findings: (e.g. Did you adjust the scenario based on previous simulation outcomes?  What are the management decisions one could make from your simulation's output, etc.)
@@ -48,6 +50,8 @@ Algorithm: Monte Carlo Tree Search
 
 ## References:
 
-1. Jeff Bradberry “Introduction to Monte Carlo Tree Search”,Github. https://jeffbradberry.com/posts/2015/09/intro-to-monte-carlo-tree-search/.
-2. Gelly, S., & Silver, D. (2011). Monte-Carlo tree search and rapid action value estimation in computer Go. Artificial Intelligence, 175(11), 1856-1875.
-3. Magnuson, M. (2015). Monte Carlo Tree Search and Its Applications. Scholarly Horizons: University of Minnesota, Morris Undergraduate Journal, 2(2), 4.
+(1) Jeff Bradberry “Introduction to Monte Carlo Tree Search”,Github. https://jeffbradberry.com/posts/2015/09/intro-to-monte-carlo-tree-search/.
+
+(2) Gelly, S., & Silver, D. (2011). Monte-Carlo tree search and rapid action value estimation in computer Go. Artificial Intelligence, 175(11), 1856-1875.
+
+(3) Magnuson, M. (2015). Monte Carlo Tree Search and Its Applications. Scholarly Horizons: University of Minnesota, Morris Undergraduate Journal, 2(2), 4.
