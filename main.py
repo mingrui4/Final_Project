@@ -94,11 +94,10 @@ class Game:
 
 
 if __name__ == '__main__':
+    # init the board
     game_board = Board(width=6, height=6, n_in_row=4)
     game = Game(game_board)
     game.start()
-
-
 
 
 
