@@ -1,9 +1,9 @@
-'''
+"""
     Player.py
     Operation form players, including movement of the stone.
-'''
+"""
 
-class Human(object):
+class Player(object):
     """
     human player
     """
@@ -15,7 +15,7 @@ class Human(object):
     def get_action(self, location):
         try:
             move = self.board.location_to_move(location)
-        except Exception as e:
+        except Exception:
             move = -1
         if move == -1 or move not in self.board.availables:
             print("Invalid move")
