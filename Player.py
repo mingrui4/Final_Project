@@ -3,10 +3,7 @@
     Operation form players, including movement of the stone.
 '''
 
-class Human(object):
-    """
-    human player
-    """
+class Player(object):
 
     def __init__(self, board, player):
         self.board = board
@@ -15,11 +12,11 @@ class Human(object):
     def get_action(self, location):
         try:
             move = self.board.location_to_move(location)
-        except Exception as e:
+        except:
             move = -1
         if move == -1 or move not in self.board.availables:
             print("Invalid move")
         return move
 
     def __str__(self):
-        return "Human"
+        return "Player"
