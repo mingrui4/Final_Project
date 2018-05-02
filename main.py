@@ -19,7 +19,7 @@ class Game:
         self.max_iteration = 1000
 
     def init_player(self):
-        choice = input("Do you want to play first ?(y/n) \ n")
+        choice = input("Do you want to play first ?(y/n) \n")
         if choice.lower() == 'y':
             return [1, 0]
         elif choice.lower() == 'n':
@@ -30,11 +30,11 @@ class Game:
 
     def init_game(self):
         players = self.init_player()
-        p1 = self.player.index(players[0])
-        p2 = self.player.index(players[1])
+        p1 = players[0]
+        p2 = players[1]
         self.board.init_board()
 
-        ai = MCTS(self.board, [p1, p2], self.n_in_row, self.time, self.max_actions)
+        ai = MCTS(self.board, [p1, p2], self.n_in_row, self.time, self.max_iteration)
         human = Player(self.board, p2)
         players = {}
         players[p1] = ai
@@ -46,11 +46,14 @@ class Game:
             current_p = turn.pop(0)
             turn.append(current_p)
             player_in_turn = players[current_p]
+
             if player_in_turn == 'Human':
                 position = [int(n, 10) for n in input("Your move: ").split(",")]
                 move = player_in_turn.get_action(position)
             else:
-                move = player_in_turn.get_action()
+                print(current_p)
+                print(player_in_turn)
+                move = player_in_turn.action()
             self.board.update(current_p, move)
             self.draw_board(self.board, human, ai)
             result, winner = self.game_end(ai)
@@ -72,7 +75,7 @@ class Game:
         return False, -1
 
     def draw_board(self, board, human, ai):
-        width = board.widh
+        width = board.width
         height = board.height
         print("Human Player", human.player, "with X \n")
         print("AI    Player", ai.player, "with O \n")
@@ -97,7 +100,8 @@ if __name__ == '__main__':
     # init the the game board
     game_board = Board(width=6, height=6, n_in_row=4)
     game = Game(game_board)
-    game.start()
+    game.init_game()
+
 
 
 
