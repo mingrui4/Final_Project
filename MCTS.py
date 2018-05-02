@@ -15,7 +15,7 @@ class MCTS(object):
         self.max_actions = max_actions
         self.n_in_row = n_in_row
 
-        self.player = turn
+        self.player = turn[0]
         self.confident = np.sqrt(2)
         self.equivalence = 1000
         self.max_depth = 1
@@ -56,6 +56,7 @@ class MCTS(object):
 
         state_list = []
         winner = -1
+        expand = True
 
         # Simulation
         for t in range(1, self.max_actions + 1):
@@ -85,6 +86,16 @@ class MCTS(object):
 
                 move, p = action
                 board.update(player, move)
+
+                # Expand
+                # add only one new child node each time
+                if expand and (action, state) not in plays:
+                    expand = False
+                    plays[(action, state)] = 0 # action是(move,player)。在棋盘状态s下，玩家player给出着法move的模拟次数
+                    wins[(action, state)] = 0 # 在棋盘状态s下，玩家player给出着法move并胜利的次数
+
+                    if t > self.max_depth:
+                        self.max_depth = t
                 state_list.append((action, state))
 
                 #judge whether to break the loop
@@ -146,14 +157,19 @@ class MCTS(object):
         """
         get players by turn here
         """
-        player = None
+        player = turn.pop(0)
+        turn.append(player)
         return player
 
     def move(self):
         """
         choose movement by win percentage
         """
-        move = None
+        percent_wins, move = max(
+            (self.wins.get(((move, self.player), self.board.current_state()), 0) /
+             self.plays.get(((move, self.player), self.board.current_state()), 1),
+             move)
+            for move in self.board.availables)
         return move
 
     def delete(self):
@@ -167,9 +183,36 @@ class MCTS(object):
                 del self.wins[(action, state)]
 
     def winner(self,board):
-        win = None
-        winner = None
-        return win,winner
+        moved = list(set(range(board.width * board.height)) - set(board.availables))
+        if (len(moved) < self.n_in_row + 2):
+            return False, -1
+
+        width = board.width
+        height = board.height
+        states = board.states
+        n = self.n_in_row
+        for m in moved:
+            h = m // width
+            w = m % width
+            player = states[m]
+
+            if (w in range(width - n + 1) and
+                    len(set(states.get(i, -1) for i in range(m, m + n))) == 1):
+                return True, player
+
+            if (h in range(height - n + 1) and
+                    len(set(states.get(i, -1) for i in range(m, m + n * width, width))) == 1):
+                return True, player
+
+            if (w in range(width - n + 1) and h in range(height - n + 1) and
+                    len(set(states.get(i, -1) for i in range(m, m + n * (width + 1), width + 1))) == 1):
+                return True, player
+
+            if (w in range(n - 1, width) and h in range(height - n + 1) and
+                    len(set(states.get(i, -1) for i in range(m, m + n * (width - 1), width - 1))) == 1):
+                return True, player
+
+        return False, -1
 
     def __str__(self):
         return "AI"
