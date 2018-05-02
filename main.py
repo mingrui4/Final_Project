@@ -25,34 +25,29 @@ class Game:
         elif choice.lower() == 'n':
             return [0, 1]
         else:
-            print("Please input y or n !")
+            print("Please input y or n ! \n")
             self.init_player()
 
     def init_game(self):
-        players = self.init_player()
-        p1 = players[0]
-        p2 = players[1]
+        turn = self.init_player()
         self.board.init_board()
 
-        ai = MCTS(self.board, [p1, p2], self.n_in_row, self.time, self.max_iteration)
-        human = Player(self.board, p2)
+        ai = MCTS(self.board, turn, self.n_in_row, self.time, self.max_iteration)
+        human = Player(self.board, 1)
         players = {}
-        players[p1] = ai
-        players[p2] = human
-        turn = [p1, p2]
-        shuffle(turn)
+        players[0] = ai
+        players[1] = human
         self.draw_board(self.board, human, ai)
         while True:
             current_p = turn.pop(0)
             turn.append(current_p)
             player_in_turn = players[current_p]
 
-            if player_in_turn == 'Human':
+            if str(player_in_turn) == 'Human':
                 position = [int(n, 10) for n in input("Your move: ").split(",")]
                 move = player_in_turn.get_action(position)
             else:
-                print(current_p)
-                print(player_in_turn)
+                print('AI move :')
                 move = player_in_turn.action()
             self.board.update(current_p, move)
             self.draw_board(self.board, human, ai)
@@ -66,7 +61,7 @@ class Game:
                 break
 
     def game_end(self, ai):
-        has_win, winner = ai.has_a_winner(self.board)
+        has_win, winner = ai.winner(self.board)
         if has_win:
             return True, winner
         elif not len(self.board.availables):
