@@ -4,6 +4,7 @@
     For point Ni, UCB = \frac{W_{i}}{N_{i}} + \sqrt{\frac{C \times lnN}{N_{i}}}
     C = 2^0.5
 '''
+# self.player 为0 对 move有影响吗
 import numpy as np
 import time
 import copy
@@ -15,7 +16,7 @@ class MCTS(object):
         self.max_actions = max_actions
         self.n_in_row = n_in_row
 
-        self.player = turn[0]
+        self.player = 0
         self.confident = np.sqrt(2)
         self.equivalence = 1000
         self.max_depth = 1
@@ -76,13 +77,15 @@ class MCTS(object):
             else:
                 # choose the nearest blank point
                 adjacents = []
+                random = []
                 if len(availables) > self.n_in_row:
                     adjacents = self.adjacent(board, state, player, plays)
 
                 if len(adjacents):
                     action = (np.random.choice(adjacents), player)
                 else:
-                    action = np.random.choice(actions)
+                    random = list(set(board.availables))
+                    action = (np.random.choice(random),player)
 
                 move, p = action
                 board.update(player, move)
@@ -177,7 +180,8 @@ class MCTS(object):
         remove paths which not been selected
         """
         length = len(self.board.states)
-        for action, state in self.plays:
+        keys = list(self.plays)
+        for action, state in keys:
             if len(state) < length + 2:
                 del self.plays[(action, state)]
                 del self.wins[(action, state)]
