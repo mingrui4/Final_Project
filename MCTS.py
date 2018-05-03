@@ -4,7 +4,7 @@
     For point Ni, UCB = \frac{W_{i}}{N_{i}} + \sqrt{\frac{C \times lnN}{N_{i}}}
     C = 2^0.5
 '''
-# self.player 为0 对 move有影响吗
+# self.player 为0 对 move有影响吗  simulation 没有进去
 import numpy as np
 import time
 import copy
@@ -48,7 +48,7 @@ class MCTS(object):
 
         return move
 
-    def run_simulation(self,board,turn):
+    def run_simulation(self, board, turn):
         plays = self.plays
         wins = self.wins
         availables = board.availables
@@ -71,7 +71,9 @@ class MCTS(object):
                         total += plays.get((a, s)) # N(s)
 
                 UCB =[(wins[(action, state)] /total)+ np.sqrt(self.confident * np.log(total) / total) for action in actions]
-                value,action = max(UCB)
+                value, action = max(UCB)
+                print('here')
+                print(value)
 
 
             else:
@@ -87,33 +89,33 @@ class MCTS(object):
                     random = list(set(board.availables))
                     action = (np.random.choice(random),player)
 
-                move, p = action
-                board.update(player, move)
+            move, p = action
+            board.update(player, move)
 
-                # Expand
-                # add only one new child node each time
-                if expand and (action, state) not in plays:
-                    expand = False
-                    plays[(action, state)] = 0 # action是(move,player)。在棋盘状态s下，玩家player给出着法move的模拟次数
-                    wins[(action, state)] = 0 # 在棋盘状态s下，玩家player给出着法move并胜利的次数
+            # Expand
+            # add only one new child node each time
+            if expand and (action, state) not in plays:
+                expand = False
+                plays[(action, state)] = 0 # action是(move,player)。在棋盘状态s下，玩家player给出着法move的模拟次数
+                wins[(action, state)] = 0 # 在棋盘状态s下，玩家player给出着法move并胜利的次数
 
-                    if t > self.max_depth:
-                        self.max_depth = t
-                state_list.append((action, state))
+                if t > self.max_depth:
+                    self.max_depth = t
+            state_list.append((action, state))
 
-                #judge whether to break the loop
-                full = not len(availables)
-                win, winner = self.winner(board)
-                if full or win:
-                    break
+            #judge whether to break the loop
+            full = not len(availables)
+            win, winner = self.winner(board)
+            if full or win:
+                break
 
-            # Back-propagation
-            for i, ((a, s), state) in enumerate(state_list):
-                action = (a, s)
-                if (action, state) in plays:
-                    plays[(action, state)] += 1  # all visited moves
-                    if player == winner and player in action:
-                        wins[(action, state)] += 1  # only winner's moves
+        # Back-propagation
+        for i, ((a, s), state) in enumerate(state_list):
+            action = (a, s)
+            if (action, state) in plays:
+                plays[(action, state)] += 1  # all visited moves
+                if player == winner and player in action:
+                    wins[(action, state)] += 1  # only winner's moves
 
 
     def adjacent(self, board, state, player, plays):
