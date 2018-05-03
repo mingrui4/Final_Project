@@ -13,7 +13,7 @@ from random import shuffle
 class Game:
     def __init__(self, board):
         self.board = board
-        self.player = [0, 1]
+        self.player = [1, 2]
         self.n_in_row = 4
         self.time = 5
         self.max_iteration = 1000
@@ -21,9 +21,9 @@ class Game:
     def init_player(self):
         choice = input("Do you want to play first ?(y/n) \n")
         if choice.lower() == 'y':
-            return [1, 0]
+            return [2, 1]
         elif choice.lower() == 'n':
-            return [0, 1]
+            return [1, 2]
         else:
             print("Please input y or n ! \n")
             self.init_player()
@@ -33,7 +33,7 @@ class Game:
         self.board.init_board()
 
         ai = MCTS(self.board, turn, self.n_in_row, self.time, self.max_iteration)
-        human = Player(self.board, 1)
+        human = Player(self.board, 2)
         players = {}
         players[0] = ai
         players[1] = human
@@ -41,7 +41,7 @@ class Game:
         while True:
             current_p = turn.pop(0)
             turn.append(current_p)
-            player_in_turn = players[current_p]
+            player_in_turn = players[current_p - 1]
 
             if str(player_in_turn) == 'Human':
                 position = [int(n, 10) for n in input("Your move: ").split(",")]
@@ -54,7 +54,7 @@ class Game:
             result, winner = self.game_end(ai)
             if result:
                 if winner != -1:
-                    if players[winner] == 'Human':
+                    if str(players[winner - 1]) == 'Human':
                         print('Congratulations! You Win!')
                     else:
                         print("Game end. You Lose!")
