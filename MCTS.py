@@ -4,10 +4,10 @@
     For point Ni, UCB = \frac{W_{i}}{N_{i}} + \sqrt{\frac{C \times lnN}{N_{i}}}
     C = 2^0.5
 '''
-# self.player 为0 对 move有影响吗  simulation 没有进去
 import numpy as np
 import time
 import copy
+# move function / self.wins,players数据存储有误
 class MCTS(object):
     def __init__(self, board, turn, n_in_row=4, time=10.0, max_actions=1000):
         self.board = board
@@ -16,7 +16,7 @@ class MCTS(object):
         self.max_actions = max_actions
         self.n_in_row = n_in_row
 
-        self.player = 0
+        self.player = 1
         self.confident = np.sqrt(2)
         self.equivalence = 1000
         self.max_depth = 1
@@ -70,16 +70,13 @@ class MCTS(object):
                     if s == state:
                         total += plays.get((a, s)) # N(s)
 
-                UCB =[(wins[(action, state)] /total)+ np.sqrt(self.confident * np.log(total) / total) for action in actions]
-                value, action = max(UCB)
-                print('here')
-                print(value)
-
+                value, action = max(((wins[(action, state)] / total) +
+                     np.sqrt(self.confident * np.log(total) / total), action)
+                    for action in actions)  # UCB
 
             else:
                 # choose the nearest blank point
                 adjacents = []
-                random = []
                 if len(availables) > self.n_in_row:
                     adjacents = self.adjacent(board, state, player, plays)
 
@@ -108,6 +105,8 @@ class MCTS(object):
             win, winner = self.winner(board)
             if full or win:
                 break
+
+            player = self.get_player(turn)
 
         # Back-propagation
         for i, ((a, s), state) in enumerate(state_list):
@@ -175,6 +174,9 @@ class MCTS(object):
              self.plays.get(((move, self.player), self.board.current_state()), 1),
              move)
             for move in self.board.availables)
+        print(percent_wins,move)
+        print(self.wins)
+        print(self.plays)
         return move
 
     def delete(self):
