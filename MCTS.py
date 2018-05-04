@@ -16,7 +16,7 @@ class MCTS(object):
         self.max_actions = max_actions
         self.n_in_row = n_in_row
 
-        self.player = 1
+        self.player = turn[0]
         self.confident = np.sqrt(2)
         self.equivalence = 1000
         self.max_depth = 1
