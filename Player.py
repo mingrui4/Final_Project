@@ -1,6 +1,6 @@
 """
     Player.py
-    Operation form players, including movement of the stone.
+    This class defines the operation for human players, including movement of the stone.
 """
 
 class Player(object):
@@ -18,7 +18,7 @@ class Player(object):
             move = self.board.location_to_move(location)
         except Exception as e:
             move = -1
-        if move == -1 or move not in self.board.availables:
+        if move == -1 or move not in self.board.blanks:
             print("invalid move")
             move = self.get_action()
         return move

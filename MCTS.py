@@ -25,8 +25,8 @@ class MCTS(object):
         self.wins = {}  # key:(action, state), value:win times 记录着法获胜的次数
 
     def action(self):
-        if len(self.board.availables) == 1:
-            return self.board.availables[0]
+        if len(self.board.blanks) == 1:
+            return self.board.blanks[0]
 
         simulations = 0
         begin = time.time()
@@ -51,7 +51,7 @@ class MCTS(object):
     def run_simulation(self, board, turn):
         plays = self.plays
         wins = self.wins
-        availables = board.availables
+        blanks = board.blanks
 
         player = self.get_player(turn)
 
@@ -63,7 +63,7 @@ class MCTS(object):
         for t in range(1, self.max_actions + 1):
             # choose one that have max UCB value
             state = board.current_state()
-            actions = [(move, player) for move in availables]
+            actions = [(move, player) for move in blanks]
             if all(plays.get((action, state)) for action in actions):
                 total = 0
                 for a, s in plays:
@@ -77,13 +77,13 @@ class MCTS(object):
             else:
                 # choose the nearest blank point
                 adjacents = []
-                if len(availables) > self.n_in_row:
+                if len(blanks) > self.n_in_row:
                     adjacents = self.adjacent(board, state, player, plays)
 
                 if len(adjacents):
                     action = (np.random.choice(adjacents), player)
                 else:
-                    random = list(set(board.availables))
+                    random = list(set(board.blanks))
                     action = (np.random.choice(random),player)
 
             move, p = action
@@ -101,7 +101,7 @@ class MCTS(object):
             state_list.append((action, state))
 
             #judge whether to break the loop
-            full = not len(availables)
+            full = not len(blanks)
             win, winner = self.winner(board)
             if full or win:
                 break
@@ -121,7 +121,7 @@ class MCTS(object):
         """
         adjacent moves
         """
-        moved = list(set(range(board.width * board.height)) - set(board.availables))
+        moved = list(set(range(board.width * board.height)) - set(board.blanks))
         adjacents = set()
         width = board.width
         height = board.height
@@ -173,7 +173,7 @@ class MCTS(object):
             (self.wins.get(((move, self.player), self.board.current_state()), 0) /
              self.plays.get(((move, self.player), self.board.current_state()), 1),
              move)
-            for move in self.board.availables)
+            for move in self.board.blanks)
         #print(percent_wins,move)
         #print(self.wins)
         #print(self.plays)
@@ -191,7 +191,7 @@ class MCTS(object):
                 del self.wins[(action, state)]
 
     def winner(self,board):
-        moved = list(set(range(board.width * board.height)) - set(board.availables))
+        moved = list(set(range(board.width * board.height)) - set(board.blanks))
         if (len(moved) < self.n_in_row + 2):
             return False, -1
 

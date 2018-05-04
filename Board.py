@@ -19,7 +19,7 @@ class Board(object):
         if self.height < self.n_in_row:
             raise Exception('board height can not less than %d' % self.n_in_row)
 
-        self.availables = list(range(self.width * self.height)) # available moves
+        self.blanks = list(range(self.width * self.height)) # available moves
 
         self.states = {} # key:move as location on the board, value:player as pieces type
 
@@ -42,13 +42,13 @@ class Board(object):
         h = location[0]
         w = location[1]
         move = h * self.width + w
-        if move not in self.availables:
+        if move not in self.blanks:
             move = -1
         return move
 
     def update(self, player, move):
         self.states[move] = player
-        self.availables.remove(move)
+        self.blanks.remove(move)
 
     def current_state(self):
         return tuple((m, self.states[m]) for m in sorted(self.states)) # for hash

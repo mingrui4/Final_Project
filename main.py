@@ -66,7 +66,7 @@ class Game:
         has_win, winner = ai.winner(self.board)
         if has_win:
             return True, winner
-        elif not len(self.board.availables):
+        elif not len(self.board.blanks):
             print("No Spaces. Tie!")
             return True, -1
         return False, -1
