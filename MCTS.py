@@ -10,9 +10,9 @@ import copy
 class MCTS(object):
     def __init__(self, board, turn, n_in_row=4, time=10.0, max_actions=1000):
         self.board = board
-        self.turn = turn
-        self.calculation_time = float(time)
-        self.max_actions = max_actions
+        self.turn = turn # step order
+        self.calculation_time = float(time) # maximum operation time.
+        self.max_actions = max_actions  # The maximum number of steps in each simulation.
         self.n_in_row = n_in_row
 
         self.player = turn[0]
@@ -26,6 +26,10 @@ class MCTS(object):
         # key:(action, state), value:win times
 
     def action(self):
+        """
+        :return: move
+        """
+        # If the board has only one final position, then returns directly.
         if len(self.board.blanks) == 1:
             return self.board.blanks[0]
 
@@ -39,7 +43,7 @@ class MCTS(object):
 
         print("total simulations=", simulations)
 
-        move = self.move()
+        move = self.move()  # choose the best method to move
         location = self.board.move_to_location(move)
         print('Maximum depth searched:', self.max_depth)
 
@@ -106,7 +110,7 @@ class MCTS(object):
                     self.max_depth = t
             state_list.append((action, state))
 
-            # judge whether to break the loop
+            # If there is no blank location or there is a winner, The game is over,
             full = not len(blanks)
             win, winner = self.winner(board)
             if full or win:
@@ -118,9 +122,9 @@ class MCTS(object):
         for i, ((a, s), state) in enumerate(state_list):
             action = (a, s)
             if (action, state) in plays:
-                plays[(action, state)] += 1  # all visited moves
+                plays[(action, state)] += 1  # all visited moves +1
                 if player == winner and player in action:
-                    wins[(action, state)] += 1  # only winner's moves
+                    wins[(action, state)] += 1  # only winner's moves +1
 
 
     def adjacent(self, board, state, player, plays):
@@ -174,7 +178,7 @@ class MCTS(object):
 
     def move(self):
         """
-        choose movement by win percentage
+        Choose the movement with the highest winning rate.
         """
         percent_wins, move = max(
             (self.wins.get(((move, self.player), self.board.current_state()), 0) /

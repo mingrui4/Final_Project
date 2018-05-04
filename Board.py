@@ -46,7 +46,7 @@ class Board(object):
         w = location[1]
         move = h * self.width + w
         if move not in self.blanks:
-            move = -1
+            move = -1 # -1 means the current position is blank.
         return move
 
     def update(self, player, move):

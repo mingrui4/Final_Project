@@ -8,9 +8,8 @@ from Player import Player
 from MCTS import MCTS
 from Board import Board
 
-
 class Game:
-    def __init__(self, board, n_in_row=4, time=5, max_iteration=1000):
+    def __init__(self, board, n_in_row=4, time=10.0, max_iteration=1000):
         """
         initialize the variables of the game
         :param board:
