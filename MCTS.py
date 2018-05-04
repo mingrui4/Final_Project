@@ -1,13 +1,12 @@
-'''
+"""
     MCTS.py
     Core function. Use MCTS and RAVE to implement the AI.
     For point Ni, UCB = \frac{W_{i}}{N_{i}} + \sqrt{\frac{C \times lnN}{N_{i}}}
     C = 2^0.5
-'''
+"""
 import numpy as np
 import time
 import copy
-# move function / self.wins,players数据存储有误
 class MCTS(object):
     def __init__(self, board, turn, n_in_row=4, time=10.0, max_actions=1000):
         self.board = board
@@ -21,8 +20,10 @@ class MCTS(object):
         self.equivalence = 1000
         self.max_depth = 1
 
-        self.plays = {}  # key:(action, state), value:visited times 记录着法参与模拟的次数，键形如(player, move)，即（玩家，落子）
-        self.wins = {}  # key:(action, state), value:win times 记录着法获胜的次数
+        self.plays = {}  # Record the number of times the method is involved in the simulation.
+        #  key:(action, state), value:visited times
+        self.wins = {}  # Record the number of wins.
+        # key:(action, state), value:win times
 
     def action(self):
         if len(self.board.blanks) == 1:
@@ -49,6 +50,9 @@ class MCTS(object):
         return move
 
     def run_simulation(self, board, turn):
+        """
+        run the simulation to implement the MCTS
+        """
         plays = self.plays
         wins = self.wins
         blanks = board.blanks
@@ -71,17 +75,17 @@ class MCTS(object):
                         total += plays.get((a, s)) # N(s)
 
                 value, action = max(((wins[(action, state)] / total) +
-                     np.sqrt(self.confident * np.log(total) / total), action)
-                    for action in actions)  # UCB
+                     np.sqrt(self.confident * np.log(total) / total), action) for action in actions)  # UCB
 
             else:
                 # choose the nearest blank point
-                adjacents = []
+                border = []
                 if len(blanks) > self.n_in_row:
-                    adjacents = self.adjacent(board, state, player, plays)
+                    border = self.adjacent(board, state, player, plays)
 
-                if len(adjacents):
-                    action = (np.random.choice(adjacents), player)
+                if len(border):
+                    action = (np.random.choice(border), player)
+                # if do not have adajacents,choice a blank randomly
                 else:
                     random = list(set(board.blanks))
                     action = (np.random.choice(random),player)
@@ -93,14 +97,16 @@ class MCTS(object):
             # add only one new child node each time
             if expand and (action, state) not in plays:
                 expand = False
-                plays[(action, state)] = 0 # action是(move,player)。在棋盘状态s下，玩家player给出着法move的模拟次数
-                wins[(action, state)] = 0 # 在棋盘状态s下，玩家player给出着法move并胜利的次数
+                plays[(action, state)] = 0
+                # Under the board state, reset the number of simulations of the move from players.
+                wins[(action, state)] = 0
+                # Under the board state, reset the number of wins of the move from players.
 
                 if t > self.max_depth:
                     self.max_depth = t
             state_list.append((action, state))
 
-            #judge whether to break the loop
+            # judge whether to break the loop
             full = not len(blanks)
             win, winner = self.winner(board)
             if full or win:
@@ -120,42 +126,43 @@ class MCTS(object):
     def adjacent(self, board, state, player, plays):
         """
         adjacent moves
+        3*3 board's moves like:
+        6 7 8
+        3 4 5
+        0 1 2
+        let the stone be 4
         """
         moved = list(set(range(board.width * board.height)) - set(board.blanks))
-        adjacents = set()
+        border = set()
         width = board.width
         height = board.height
 
         for m in moved:
-            # 3*3 board's moves like:
-            # 6 7 8
-            # 3 4 5
-            # 0 1 2
-            # let the stone be 4
+
             h = m // width
             w = m % width
             if w < width - 1:
-                adjacents.add(m + 1)  # 5
+                border.add(m + 1)  # 5
             if w > 0:
-                adjacents.add(m - 1)  # 3
+                border.add(m - 1)  # 3
             if h < height - 1:
-                adjacents.add(m + width)  # 7
+                border.add(m + width)  # 7
             if h > 0:
-                adjacents.add(m - width)  # 1
+                border.add(m - width)  # 1
             if w < width - 1 and h < height - 1:
-                adjacents.add(m + width + 1)  # 8
+                border.add(m + width + 1)  # 8
             if w > 0 and h < height - 1:
-                adjacents.add(m + width - 1)  # 6
+                border.add(m + width - 1)  # 6
             if w < width - 1 and h > 0:
-                adjacents.add(m - width + 1)  # 2
+                border.add(m - width + 1)  # 2
             if w > 0 and h > 0:
-                adjacents.add(m - width - 1)  # 1
+                border.add(m - width - 1)  # 1
 
-        adjacents = list(set(adjacents) - set(moved))
-        for move in adjacents:
+        border = list(set(border) - set(moved))
+        for move in border:
             if plays.get(((move, player), state)):
-                adjacents.remove(move)
-        return adjacents
+                border.remove(move)
+        return border
 
     def get_player(self,turn):
         """
@@ -174,15 +181,13 @@ class MCTS(object):
              self.plays.get(((move, self.player), self.board.current_state()), 1),
              move)
             for move in self.board.blanks)
-        #print(percent_wins,move)
-        #print(self.wins)
-        #print(self.plays)
         return move
 
     def delete(self):
         """
         remove paths which not been selected
         """
+
         length = len(self.board.states)
         keys = list(self.plays)
         for action, state in keys:
@@ -191,8 +196,11 @@ class MCTS(object):
                 del self.wins[(action, state)]
 
     def winner(self,board):
+        """
+        judge whether there be a winner
+        """
         moved = list(set(range(board.width * board.height)) - set(board.blanks))
-        if (len(moved) < self.n_in_row + 2):
+        if len(moved) < self.n_in_row + 2:
             return False, -1
 
         width = board.width
