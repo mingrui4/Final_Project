@@ -26,7 +26,8 @@ class Game:
             return [1, 2]
         else:
             print("Please input y or n ! \n")
-            self.init_player()
+            result = self.init_player()
+            return result
 
     def init_game(self):
         turn = self.init_player()
@@ -45,10 +46,10 @@ class Game:
             player_in_turn = players[current_p]
 
             if str(player_in_turn) == 'Human':
-                position = [int(n, 10) for n in input("Your move: ").split(",")]
-                move = player_in_turn.get_action(position)
+                print('Now is your turn :')
+                move = player_in_turn.get_action()
             else:
-                print('AI move :')
+                print('Now is AI turn :')
                 move = player_in_turn.action()
             self.board.update(current_p, move)
             self.draw_board(self.board, human, ai)

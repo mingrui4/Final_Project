@@ -174,9 +174,9 @@ class MCTS(object):
              self.plays.get(((move, self.player), self.board.current_state()), 1),
              move)
             for move in self.board.availables)
-        print(percent_wins,move)
-        print(self.wins)
-        print(self.plays)
+        #print(percent_wins,move)
+        #print(self.wins)
+        #print(self.plays)
         return move
 
     def delete(self):

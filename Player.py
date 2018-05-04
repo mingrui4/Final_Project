@@ -12,13 +12,15 @@ class Player(object):
         self.board = board
         self.player = player
 
-    def get_action(self, location):
+    def get_action(self):
         try:
+            location = [int(n, 10) for n in input("Your move: ").split(",")]
             move = self.board.location_to_move(location)
-        except Exception:
+        except Exception as e:
             move = -1
         if move == -1 or move not in self.board.availables:
-            print("Invalid move")
+            print("invalid move")
+            move = self.get_action()
         return move
 
     def __str__(self):
