@@ -32,16 +32,17 @@ class Game:
         turn = self.init_player()
         self.board.init_board()
 
-        ai = MCTS(self.board, turn, self.n_in_row, self.time, self.max_iteration)
+        ai = MCTS(self.board, [1,2], self.n_in_row, self.time, self.max_iteration)
         human = Player(self.board, 2)
         players = {}
-        players[0] = ai
-        players[1] = human
+        players[1] = ai
+        players[2] = human
+
         self.draw_board(self.board, human, ai)
         while True:
             current_p = turn.pop(0)
             turn.append(current_p)
-            player_in_turn = players[current_p - 1]
+            player_in_turn = players[current_p]
 
             if str(player_in_turn) == 'Human':
                 position = [int(n, 10) for n in input("Your move: ").split(",")]
@@ -54,7 +55,7 @@ class Game:
             result, winner = self.game_end(ai)
             if result:
                 if winner != -1:
-                    if str(players[winner - 1]) == 'Human':
+                    if str(players[winner]) == 'Human':
                         print('Congratulations! You Win!')
                     else:
                         print("Game end. You Lose!")
