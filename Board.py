@@ -1,8 +1,7 @@
-'''
+"""
     Board.py
     Create a board to play the game. Via data from Player.py and MCTS.py to put the stone.
-'''
-
+"""
 
 class Board(object):
 
@@ -25,18 +24,22 @@ class Board(object):
 
     def move_to_location(self, move):
         """
+        transfer move to location
         3*3 board's moves like:
         6 7 8
         3 4 5
         0 1 2
-        and move 5's location is (1,2)
+        and move 7's location is (2,1)
         """
         h = move // self.width
         w = move % self.width
         return [h, w]
 
     def location_to_move(self, location):
-        if(len(location) != 2):
+        """
+        transfer location to move
+        """
+        if len(location) != 2:
             move = -1
             return move
         h = location[0]
@@ -47,8 +50,11 @@ class Board(object):
         return move
 
     def update(self, player, move):
+        """
+        update the board
+        """
         self.states[move] = player
         self.blanks.remove(move)
 
     def current_state(self):
-        return tuple((m, self.states[m]) for m in sorted(self.states)) # for hash
+        return tuple((m, self.states[m]) for m in sorted(self.states))  # for hash
