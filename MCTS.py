@@ -44,7 +44,7 @@ class MCTS(object):
         print("total simulations=", simulations)
 
         move = self.move()  # choose the best method to move
-        location = self.board.move_to_location(move)
+        location = self.board.stone_to_position(move)
         print('Maximum depth searched:', self.max_depth)
 
         print("AI move: %d,%d\n" % (location[0], location[1]))
