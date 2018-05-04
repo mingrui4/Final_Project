@@ -11,12 +11,12 @@ from random import shuffle
 
 
 class Game:
-    def __init__(self, board):
+    def __init__(self, board, n_in_row = 4, time = 5, max_iteration = 1000):
         self.board = board
         self.player = [1, 2]
-        self.n_in_row = 4
-        self.time = 5
-        self.max_iteration = 1000
+        self.n_in_row = n_in_row
+        self.time = time
+        self.max_iteration = max_iteration
 
     def init_player(self):
         choice = input("Do you want to play first ?(y/n) \n")
@@ -92,10 +92,22 @@ class Game:
                     print('_'.center(8), end='')
             print('\r\n\r\n')
 
+def iinput():
+    width = input("Please input the width and height, the length need to larger than 4\n")
+    width = int(width)
+    if width <= 4:
+        print("Invalid input!")
+        width = iinput()
+        return width
+    return width
+
 
 if __name__ == '__main__':
     # init the the game board
-    game_board = Board(width=6, height=6, n_in_row=4)
+    width = iinput()
+    height = width
+    # n_in_row = input('Please input the n_in_row')
+    game_board = Board(width, height, n_in_row=4)
     game = Game(game_board)
     game.init_game()
 
