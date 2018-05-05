@@ -9,7 +9,7 @@ from MCTS import MCTS
 from Board import Board
 
 class Game:
-    def __init__(self, board, n_in_row=4, time=10.0, max_iteration=1000):
+    def __init__(self, board, n_in_row=4, time=10.0, max_iteration=1000, model_choice = True):
         """
         initialize the variables of the game
         :param board:
@@ -22,13 +22,14 @@ class Game:
         self.n_in_row = n_in_row
         self.time = time
         self.max_iteration = max_iteration
+        self.model_choice = model_choice
 
     def init_player(self):
         """
         Ask the human player to choose whether to play first. Initialize and return the player turn.
         :return: list
         """
-        choice = input("Do you want to play first ?(y/n) \n")
+        choice = input("Do you want to play first?(y/n) \n")
         if choice.lower() == 'y':
             return [2, 1]    # human player is player2 and play first
         elif choice.lower() == 'n':
@@ -48,7 +49,7 @@ class Game:
         play_turn = self.init_player()
         self.board.init_board()
 
-        ai = MCTS(self.board, [1, 2], self.n_in_row, self.time, self.max_iteration)
+        ai = MCTS(self.board, [1, 2], self.n_in_row, self.time, self.max_iteration, self.model_choice)
         human = Player(self.board, 2)
         players = {}
         players[1] = ai  # store AI as value in player1
@@ -138,15 +139,28 @@ def board_input():
         return board_width
     return board_width
 
+def model_input():
+    model = input("Please choose whether use MCTS AI (y/n)\n")
+    if model.lower() == 'y':
+        return True
+    elif model.lower() == 'n':
+        return False
+    else:
+        print("Please input y or n ! \n")
+        play_turn = model_input()
+        return play_turn
+
+
 
 if __name__ == '__main__':
 
     # init the the game board with width and height
     width = board_input()
     height = width
-
+    model_choice = model_input()
+    n_in_row = 4
     # start the game
-    game_board = Board(width, height, n_in_row=4)
+    game_board = Board(width, height, n_in_row, model_choice)
     game = Game(game_board)
     game.init_game()
 

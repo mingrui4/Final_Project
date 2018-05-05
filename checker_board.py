@@ -19,7 +19,7 @@ class CheckerBoard(object):
         self.screen = pygame.display.set_mode((self.length,self.width))
         pygame.display.set_caption("Five In a Row")
 
-        self.draw_lines(15, 15)
+        self.draw_lines(6, 6)
 
     def draw_lines(self, row, col):
         color = 0,0,0
@@ -80,7 +80,7 @@ class CheckerBoard(object):
                     if pos == self.points[real_pos]:
                         real_pos = real_pos
                         color = 0,0,0
-                        radius = 5
+                        radius = 4
                         point_width = 0
                         pygame.draw.circle(self.screen, color, real_pos, radius, point_width)
                         break

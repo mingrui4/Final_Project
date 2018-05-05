@@ -8,7 +8,7 @@ import numpy as np
 import time
 import copy
 class MCTS(object):
-    def __init__(self, board, turn, n_in_row=4, time=10.0, max_actions=1000):
+    def __init__(self, board, turn, n_in_row=4, time=10.0, max_actions=1000, model_choice = True):
         self.board = board
         self.turn = turn # step order
         self.calculation_time = float(time) # maximum operation time.
@@ -19,6 +19,7 @@ class MCTS(object):
         self.confident = np.sqrt(2)
         self.equivalence = 1000
         self.max_depth = 1
+        self.model_choice = model_choice
 
         self.plays = {}  # Record the number of times the method is involved in the simulation.
         #  key:(action, state), value:visited times
@@ -33,23 +34,31 @@ class MCTS(object):
         if len(self.board.blanks) == 1:
             return self.board.blanks[0]
 
-        simulations = 0
-        begin = time.time()
-        while time.time() - begin < self.calculation_time:
-            board_copy = copy.deepcopy(self.board)  # simulation will change board's states,
-            turn_copy = copy.deepcopy(self.turn)  # and play turn
-            self.run_simulation(board_copy, turn_copy)
-            simulations += 1
+        if self.model_choice:
+            simulations = 0
+            begin = time.time()
+            while time.time() - begin < self.calculation_time:
+                board_copy = copy.deepcopy(self.board)  # simulation will change board's states,
+                turn_copy = copy.deepcopy(self.turn)  # and play turn
+                self.run_simulation(board_copy, turn_copy)
+                simulations += 1
 
-        print("total simulations=", simulations)
+            print("total simulations=", simulations)
 
-        move = self.move()  # choose the best method to move
-        location = self.board.move_to_location(move)
-        print('Maximum depth searched:', self.max_depth)
+            move = self.move()  # choose the best method to move
+            location = self.board.move_to_location(move)
+            print('Maximum depth searched:', self.max_depth)
 
-        print("AI move: %d,%d\n" % (location[0], location[1]))
+            print("AI move: %d,%d\n" % (location[0], location[1]))
 
-        self.delete()
+            self.delete()
+
+        else:
+            board_copy = copy.deepcopy(self.board)
+            random = list(set(board_copy.blanks))
+            move= np.random.choice(random)
+            location = self.board.move_to_location(move)
+            print("AI move: %d,%d\n" % (location[0], location[1]))
 
         return move
 
