@@ -43,22 +43,22 @@ class MCTS(object):
                 self.run_simulation(board_copy, turn_copy)
                 simulations += 1
 
-            print("total simulations=", simulations)
 
             move = self.move()  # choose the best method to move
             location = self.board.stone_to_position(move)
-            print('Maximum depth searched:', self.max_depth)
 
-            print("AI move: %d,%d\n" % (location[0], location[1]))
+            print("AI puts stone on position: %d,%d" % (location[0], location[1]))
+            print("Total simulation times=", simulations)
+            print('Maximum depth searched:', self.max_depth, "\n")
 
             self.delete()
 
         else:
             board_copy = copy.deepcopy(self.board)
             random = list(set(board_copy.blanks))
-            move= np.random.choice(random)
+            move = np.random.choice(random)
             location = self.board.stone_to_position(move)
-            print("AI move: %d,%d\n" % (location[0], location[1]))
+            print("AI puts stone on position: %d,%d\n" % (location[0], location[1]))
 
         return move
 

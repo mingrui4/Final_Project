@@ -108,8 +108,8 @@ class Game:
         """
         width = board.width
         height = board.height
-        print("Human Player", human.player, "with H \n")
-        print("AI    Player", ai.player, "with A \n")
+        print("Player 1: AI player -- A \n")
+        print("Player 2: Human player -- H \n")
         for x in range(width):
             print("{0:8}".format(x), end='')
         print('\r\n')
@@ -140,16 +140,6 @@ def board_input():
         return board_width
     return board_width
 
-def model_input():
-    model = input("Please choose whether use MCTS AI (y/n)\n")
-    if model.lower() == 'y':
-        return True
-    elif model.lower() == 'n':
-        return False
-    else:
-        print("Please input y or n ! \n")
-        play_turn = model_input()
-        return play_turn
 
 
 

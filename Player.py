@@ -15,7 +15,7 @@ class Player(object):
         :return: integer
         """
         try:
-            position = [int(n, 10) for n in input("Your move: ").split(",")]
+            position = [int(n, 10) for n in input("Enter the position to put the stone (h,w): ").split(",")]
             put_stone = self.board.position_to_stone(position)
         except:
             put_stone = -999
