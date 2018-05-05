@@ -134,10 +134,12 @@ def board_input():
     """
     board_width = input("Please input the width/height of the board, the length need to be larger than 4\n")
     board_width = int(board_width)
-    if board_width <= 4:
-        print("Invalid input! Please enter again!")
-        board_width = board_input()
-        return board_width
+    while 1:
+        if board_width <= 4:
+            board_width = input("Invalid input! Please enter again!The length need to be larger than 4\n")
+            board_width = int(board_width)
+        else:
+            break
     return board_width
 
 def model_input():
