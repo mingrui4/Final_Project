@@ -15,14 +15,19 @@ class Player(object):
         :return: integer
         """
         try:
-            position = [int(n, 10) for n in input("Your move: ").split(",")]
+            user_input = input("Your move: ").split(",")
+            position = [int(step, 10) for step in user_input]
             put_stone = self.board.position_to_stone(position)
         except:
             put_stone = -999
-        if put_stone == -999 or put_stone not in self.board.blanks:
-            print("This is a invalid move, please enter again!")
-            put_stone = self.human_action()
-        return put_stone
+        while True:
+            if put_stone == -999 or put_stone not in self.board.blanks:
+                user_input = input("This is a invalid move, please enter again!(x,x)\n")
+                position = [int(step, 10) for step in user_input]
+                put_stone = self.board.position_to_stone(position)
+            return put_stone
+
+
 
     def __str__(self):
         return "Human"
