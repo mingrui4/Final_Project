@@ -31,14 +31,13 @@ class Game:
         :return: list
         """
         choice = input("Do you want to play first?(y/n) \n")
-        if choice.lower() == 'y':
-            return [2, 1]    # human player is player2 and play first
-        elif choice.lower() == 'n':
-            return [1, 2]    # AI play first
-        else:
-            print("Please input y or n ! \n")
-            play_turn = self.init_player()
-            return play_turn
+        while 1:
+            if choice.lower() == 'y':
+                return [2, 1]  # human player is player2 and play first
+            elif choice.lower() == 'n':
+                return [1, 2]  # AI play first
+            else:
+                choice = input("Please input y or n to determine whether to play first(y/n) \n")
 
     def init_game(self):
         """
