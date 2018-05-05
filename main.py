@@ -9,13 +9,14 @@ from MCTS import MCTS
 from Board import Board
 
 class Game:
-    def __init__(self, board, n_in_row=4, time=10.0, max_iteration=1000, model_choice = True):
+    def __init__(self, board, n_in_row=4, time=10.0, max_iteration=1000, model_choice = False):
         """
         initialize the variables of the game
         :param board:
         :param n_in_row: default as 4
         :param time: default as 5
         :param max_iteration: default as 1000
+        :param model_choice: default as True, True: use MCTS model; False: use dumb model
         """
         self.board = board
         self.player = [1, 2]  # display the human and ai players as player1 and player2
@@ -157,10 +158,9 @@ if __name__ == '__main__':
     # init the the game board with width and height
     width = board_input()
     height = width
-    model_choice = model_input()
     n_in_row = 4
     # start the game
-    game_board = Board(width, height, n_in_row, model_choice)
+    game_board = Board(width, height, n_in_row)
     game = Game(game_board)
     game.init_game()
 

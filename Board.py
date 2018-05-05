@@ -5,7 +5,7 @@
 
 class Board(object):
 
-    def __init__(self, width=6, height=6, n_in_row=4, model_choice = True):
+    def __init__(self, width=6, height=6, n_in_row=4):
         self.width = width
         self.height = height
         self.states = {} # board states, key:move, value: player as piece type
