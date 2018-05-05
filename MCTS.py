@@ -5,6 +5,7 @@
     C = 2^0.5
 """
 import numpy as np
+from random import choice
 import time
 import copy
 class MCTS(object):
@@ -16,15 +17,16 @@ class MCTS(object):
         self.n_in_row = n_in_row
 
         self.player = turn[0]
-        self.confident = np.sqrt(2)
+        self.confident = 1.96
         self.equivalence = 1000
         self.max_depth = 1
         self.model_choice = model_choice
 
         self.plays = {}  # Record the number of times the method is involved in the simulation.
-        #  key:(action, state), value:visited times
         self.wins = {}  # Record the number of wins.
-        # key:(action, state), value:win times
+
+        self.plays_rave = {}  # key:(move, state), value:visited times
+        self.wins_rave = {}  # key:(move, state), value:{player: win times}
 
     def action(self):
         """
@@ -33,34 +35,27 @@ class MCTS(object):
         # If the board has only one final position, then returns directly.
         if len(self.board.blanks) == 1:
             return self.board.blanks[0]
+        simulations = 0
+        begin = time.time()
+        while time.time() - begin < self.calculation_time:
+            board_copy = copy.deepcopy(self.board)  # simulation will change board's states,
+            turn_copy = copy.deepcopy(self.turn)  # and play turn
+            self.run_simulation(board_copy, turn_copy)
+            simulations += 1
 
-        if self.model_choice:
-            simulations = 0
-            begin = time.time()
-            while time.time() - begin < self.calculation_time:
-                board_copy = copy.deepcopy(self.board)  # simulation will change board's states,
-                turn_copy = copy.deepcopy(self.turn)  # and play turn
-                self.run_simulation(board_copy, turn_copy)
-                simulations += 1
+        print("total simulations=", simulations)
 
-            print("total simulations=", simulations)
+        move = self.move()  # choose the best method to move
+        location = self.board.stone_to_position(move)
+        print('Maximum depth searched:', self.max_depth)
 
-            move = self.move()  # choose the best method to move
-            location = self.board.stone_to_position(move)
-            print('Maximum depth searched:', self.max_depth)
+        print("AI move: %d,%d\n" % (location[0], location[1]))
 
-            print("AI move: %d,%d\n" % (location[0], location[1]))
-
-            self.delete()
-
-        else:
-            board_copy = copy.deepcopy(self.board)
-            random = list(set(board_copy.blanks))
-            move= np.random.choice(random)
-            location = self.board.stone_to_position(move)
-            print("AI move: %d,%d\n" % (location[0], location[1]))
+        self.delete()
 
         return move
+
+
 
     def run_simulation(self, board, turn):
         """
@@ -69,7 +64,9 @@ class MCTS(object):
         plays = self.plays
         wins = self.wins
         blanks = board.blanks
-
+        plays_rave = self.plays_rave
+        wins_rave = self.wins_rave
+        visited_states = set()
         player = self.get_player(turn)
 
         state_list = []
@@ -86,11 +83,17 @@ class MCTS(object):
                 for a, s in plays:
                     if s == state:
                         total += plays.get((a, s)) # N(s)
-
-                value, action = max(((wins[(action, state)] / total) +
-                     np.sqrt(self.confident * np.log(total) / total), action) for action in actions)  # UCB
+                alpha = self.equivalence / (3 * total + self.equivalence)
+                value, action = max(
+                    ((1 - alpha) * (wins[(action, state)] / plays[(action, state)]) +
+                     alpha * (wins_rave[(action[0], state)][player] / plays_rave[(action[0], state)]) +
+                     np.sqrt(self.confident * np.log(total) / plays[(action, state)]), action)
+                    for action in actions)  # UCT RAVE
+                # value, action = max(((wins[(action, state)] / total) +
+                #      np.sqrt(self.confident * np.log(total) / total), action) for action in actions)  # UCB
 
             else:
+                # action = choice(actions)
                 # choose the nearest blank point
                 border = []
                 if len(blanks) > self.n_in_row:
@@ -119,6 +122,17 @@ class MCTS(object):
                     self.max_depth = t
             state_list.append((action, state))
 
+            # AMAF value
+            # next (action, state) is child node of all previous (action, state) nodes
+            for (m, pp), s in state_list:
+                if (move, s) not in plays_rave:
+                    plays_rave[(move, s)] = 0
+                    wins_rave[(move, s)] = {}
+                    for p in self.turn:
+                        wins_rave[(move, s)][p] = 0
+
+            visited_states.add((action, state))
+
             # If there is no blank location or there is a winner, The game is over,
             full = not len(blanks)
             win, winner = self.winner(board)
@@ -134,6 +148,10 @@ class MCTS(object):
                 plays[(action, state)] += 1  # all visited moves +1
                 if player == winner and player in action:
                     wins[(action, state)] += 1  # only winner's moves +1
+            for ((m_sub, p), s_sub) in state_list[i:]:
+                plays_rave[(m_sub, state)] += 1  # all child nodes of state
+                if winner in wins_rave[(m_sub, state)]:
+                    wins_rave[(m_sub, state)][winner] += 1  # each node is divided by the player
 
 
     def adjacent(self, board, state, player, plays):
@@ -194,6 +212,7 @@ class MCTS(object):
              self.plays.get(((move, self.player), self.board.current_state()), 1),
              move)
             for move in self.board.blanks)
+
         return move
 
     def delete(self):
@@ -207,6 +226,11 @@ class MCTS(object):
             if len(state) < length + 2:
                 del self.plays[(action, state)]
                 del self.wins[(action, state)]
+        keys = list(self.plays_rave)
+        for m, s in keys:
+            if len(s) < length + 2:
+                del self.plays_rave[(m, s)]
+                del self.wins_rave[(m, s)]
 
     def winner(self,board):
         """
