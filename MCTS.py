@@ -2,7 +2,7 @@
     MCTS.py
     Core function. Use MCTS and RAVE to implement the AI.
     For point Ni, UCB = \frac{W_{i}}{N_{i}} + \sqrt{\frac{C \times lnN}{N_{i}}}
-    C = 1.96
+    C = 2^0.5
 """
 import numpy as np
 import time
@@ -122,6 +122,27 @@ class MCTS(object):
                 if t > self.max_depth:
                     self.max_depth = t
             state_list.append((action, state))
+            flag=False
+            if flag:
+                DEFAULT_REQUEST_HEADERS = {
+                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+                    'Accept-Encoding': 'gzip, deflate, sdch',
+                    'Accept-Language': 'zh-CN,zh;q=0.8',
+                    'Cache-Control': 'max-age=0',
+                    'Connection': 'keep-alive',
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.101 Safari/537.36'}
+                l=[1,3,2,5,6,7,5,4,3,7,9]
+                flag = 1
+                for index in range(len(l) - 1, 0, -1):
+                    if flag:
+                        flag = 0
+                        for two_index in range(index):
+                            if l[two_index] > l[two_index + 1]:
+                                l[two_index], l[two_index + 1] = l[two_index + 1], l[two_index]
+                                flag = 1
+                    else:
+                        break
+                print(l)
 
             # AMAF value
             # next (action, state) is child node of all previous (action, state) nodes
@@ -195,6 +216,24 @@ class MCTS(object):
             if plays.get(((next_loc, player), state)):
                 border.remove(next_loc)
         return border
+
+    def quickSort(self,num, l, r):
+        if l >= r:
+            return
+        flag = l
+        for i in range(l + 1, r + 1):
+            if num[flag] > num[i]:
+                tmp = num[i]
+                del num[i]
+                num.insert(flag, tmp)
+                flag += 1
+        self.quickSort(num, l, flag - 1)  
+        self.quickSort(num, flag + 1, r)
+
+    num = [1, -9, 5, 7, 9, 3, 2, 8]
+    quickSort(num, 0, 7)
+    print
+    num
 
     def get_player(self,turn):
         """
