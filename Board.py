@@ -12,13 +12,12 @@ class Board(object):
         self.n_in_row = n_in_row # need how many pieces in a row to win
 
     def init_board(self):
-        if self.width < self.n_in_row :
+        # board width less than 4
+        if self.width < self.n_in_row or self.height < self.n_in_row:
             raise Exception('board width can not less than %d' % self.n_in_row)
 
-        if self.height < self.n_in_row:
-            raise Exception('board height can not less than %d' % self.n_in_row)
-
         self.blanks = list(range(self.width * self.height)) # available moves
+
 
         self.states = {} # key:move as location on the board, value:player as pieces type
 
@@ -46,11 +45,12 @@ class Board(object):
         w = position[1]
         stone = h * self.width + w
         if stone not in self.blanks:
-            stone = -1  # -1 means the current position is blank.
+            return -1  # -1 means the current position is blank.
         return stone
 
     def update(self, player, stone):
         """
+        player move to (x,x)
         update the board
         """
         self.states[stone] = player
