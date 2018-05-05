@@ -16,7 +16,7 @@ class Player(object):
         """
         try:
             position = [int(n, 10) for n in input("Your move: ").split(",")]
-            put_stone = self.board.location_to_move(position)
+            put_stone = self.board.position_to_stone(position)
         except:
             put_stone = -999
         if put_stone == -999 or put_stone not in self.board.blanks:

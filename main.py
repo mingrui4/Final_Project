@@ -107,8 +107,8 @@ class Game:
         """
         width = board.width
         height = board.height
-        print("Human Player", human.player, "with X \n")
-        print("AI    Player", ai.player, "with O \n")
+        print("Human Player", human.player, "with H \n")
+        print("AI    Player", ai.player, "with A \n")
         for x in range(width):
             print("{0:8}".format(x), end='')
         print('\r\n')
@@ -118,11 +118,11 @@ class Game:
                 position = i * width + j
                 player = board.states.get(position, -1)
                 if player == human.player:
-                    print('X'.center(8), end='')
+                    print('H'.center(8), end='')
                 elif player == ai.player:
-                    print('O'.center(8), end='')
+                    print('A'.center(8), end='')
                 else:
-                    print('_'.center(8), end='')
+                    print('.'.center(8), end='')
             print('\r\n\r\n')
 
 
