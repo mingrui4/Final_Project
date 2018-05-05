@@ -145,6 +145,7 @@ def board_input():
 
 if __name__ == '__main__':
 
+    print("Welcome to Four-In-Row!")
     # init the the game board with width and height
     width = board_input()
     height = width
