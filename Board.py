@@ -20,7 +20,8 @@ class Board(object):
 
         self.blanks = list(range(self.width * self.height)) # available moves
 
-        self.states = {} # key:move as location on the board, value:player as pieces type
+        for m in self.blanks:
+            self.states[m] = -1
 
     def stone_to_position(self, stone):
         """
@@ -57,4 +58,4 @@ class Board(object):
         self.blanks.remove(stone)
 
     def current_state(self):
-        return tuple((m, self.states[m]) for m in sorted(self.states))   # for hash
+        return tuple((m, self.states[m]) for m in sorted(self.states)) # for hash

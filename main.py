@@ -9,12 +9,12 @@ from MCTS import MCTS
 from Board import Board
 
 class Game:
-    def __init__(self, board, n_in_row=4, time=10.0, max_iteration=1000, model_choice = True):
+    def __init__(self, board, n_in_row=4, time=5.0, max_iteration=1000, model_choice=True):
         """
         initialize the variables of the game
         :param board:
         :param n_in_row: default as 4
-        :param time: default as 10
+        :param time: default as 5.0
         :param max_iteration: default as 1000
         :param model_choice: default as True, True: use MCTS model; False: use dumb model
         """
@@ -133,14 +133,11 @@ def board_input():
     :return: Integer
     """
     board_width = input("Please input the width/height of the board, the length need to be larger than 4\n")
-    board_width = int(board_width)
-    if board_width <= 4:
+    if not board_width.isdigit() or int(board_width) <= 4:
         print("Invalid input! Please enter again!")
         board_width = board_input()
         return board_width
-    return board_width
-
-
+    return int(board_width)
 
 
 if __name__ == '__main__':
