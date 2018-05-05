@@ -31,14 +31,14 @@ class Game:
         :return: list
         """
         choice = input("Do you want to play first?(y/n) \n")
-        while 1:
-            if choice.lower() == 'y':
-                return [2, 1]  # human player is player2 and play first
-            elif choice.lower() == 'n':
-                return [1, 2]  # AI play first
-            else:
-                choice = input("Please input y or n to determine whether to play first(y/n) \n")
-
+        if choice.lower() == 'y':
+            return [2, 1]    # human player is player2 and play first
+        elif choice.lower() == 'n':
+            return [1, 2]    # AI play first
+        else:
+            print("Please input y or n ! \n")
+            play_turn = self.init_player()
+            return play_turn
 
     def init_game(self):
         """
@@ -134,12 +134,10 @@ def board_input():
     """
     board_width = input("Please input the width/height of the board, the length need to be larger than 4\n")
     board_width = int(board_width)
-    while 1:
-        if board_width <= 4:
-            board_width = input("Invalid input! Please enter again!The length need to be larger than 4\n")
-            board_width = int(board_width)
-        else:
-            break
+    if board_width <= 4:
+        print("Invalid input! Please enter again!")
+        board_width = board_input()
+        return board_width
     return board_width
 
 def model_input():

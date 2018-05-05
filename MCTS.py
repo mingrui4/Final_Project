@@ -2,7 +2,7 @@
     MCTS.py
     Core function. Use MCTS and RAVE to implement the AI.
     For point Ni, UCB = \frac{W_{i}}{N_{i}} + \sqrt{\frac{C \times lnN}{N_{i}}}
-    C = 1.96
+    C = 2^0.5
 """
 import numpy as np
 import time
@@ -14,47 +14,53 @@ class MCTS(object):
         self.calculation_time = float(time) # maximum operation time.
         self.max_actions = max_actions  # The maximum number of steps in each simulation.
         self.n_in_row = n_in_row
-        self.useful=0
+
         self.player = turn[0]
-        self.confident = 1.96
+        self.confident = np.sqrt(2)
         self.equivalence = 1000
         self.max_depth = 1
         self.model_choice = model_choice
-        self.location='_root'
-        self.plays = {}  # Record the number of times the method is involved in the simulation.
-        self.wins = {}  # Record the number of wins.
 
-        self.plays_plus = {}  # key:(next_loc, state), value:visited times
-        self.wins_plus = {}  # key:(next_loc, state), value:{player: win times}
+        self.plays = {}  # Record the number of times the method is involved in the simulation.
+        #  key:(action, state), value:visited times
+        self.wins = {}  # Record the number of wins.
+        # key:(action, state), value:win times
 
     def action(self):
         """
-        :return: next_loc
+        :return: move
         """
         # If the board has only one final position, then returns directly.
         if len(self.board.blanks) == 1:
             return self.board.blanks[0]
-        simulations = 0
-        begin = time.time()
-        while time.time() - begin < self.calculation_time:
-            board_copy = copy.deepcopy(self.board)  # simulation will change board's states,
-            turn_copy = copy.deepcopy(self.turn)  # and play turn
-            self.run_simulation(board_copy, turn_copy)
-            simulations += 1
 
-        print("total simulations=", simulations)
+        if self.model_choice:
+            simulations = 0
+            begin = time.time()
+            while time.time() - begin < self.calculation_time:
+                board_copy = copy.deepcopy(self.board)  # simulation will change board's states,
+                turn_copy = copy.deepcopy(self.turn)  # and play turn
+                self.run_simulation(board_copy, turn_copy)
+                simulations += 1
 
-        next_loc = self.next_loc()  # choose the best method to next_loc
-        location = self.board.stone_to_position(next_loc)
-        print('Maximum depth searched:', self.max_depth)
+            print("total simulations=", simulations)
 
-        print("AI next_loc: %d,%d\n" % (location[0], location[1]))
+            move = self.move()  # choose the best method to move
+            location = self.board.stone_to_position(move)
+            print('Maximum depth searched:', self.max_depth)
 
-        self.delete()
+            print("AI move: %d,%d\n" % (location[0], location[1]))
 
-        return next_loc
+            self.delete()
 
+        else:
+            board_copy = copy.deepcopy(self.board)
+            random = list(set(board_copy.blanks))
+            move= np.random.choice(random)
+            location = self.board.stone_to_position(move)
+            print("AI move: %d,%d\n" % (location[0], location[1]))
 
+        return move
 
     def run_simulation(self, board, turn):
         """
@@ -63,38 +69,29 @@ class MCTS(object):
         plays = self.plays
         wins = self.wins
         blanks = board.blanks
-        plays_plus = self.plays_plus
-        wins_plus = self.wins_plus
-        visited_states = set()
+
         player = self.get_player(turn)
 
         state_list = []
         winner = -1
         expand = True
 
-        if expand:
-            #expand is not true ,so we have to change it to true,so the tree can be expanded
-            expand=True
-
         # Simulation
         for t in range(1, self.max_actions + 1):
             # choose one that have max UCB value
             state = board.current_state()
-            actions = [(next_loc, player) for next_loc in blanks]       #get all the blank location to put a new chess
-            if all(plays.get((action, state)) for action in actions):    #check if all elements in plays are assigned a value
+            actions = [(move, player) for move in blanks]
+            if all(plays.get((action, state)) for action in actions):
                 total = 0
                 for a, s in plays:
                     if s == state:
                         total += plays.get((a, s)) # N(s)
-                alpha = self.equivalence / (3 * total + self.equivalence)
-                value, action = max(
-                    ((1 - alpha) * (wins[(action, state)] / plays[(action, state)]) +
-                     alpha * (wins_plus[(action[0], state)][player] / plays_plus[(action[0], state)]) +
-                     np.sqrt(self.confident * np.log(total) / plays[(action, state)]), action)
-                    for action in actions)  # UCT RAVE
+
+                value, action = max(((wins[(action, state)] / total) +
+                     np.sqrt(self.confident * np.log(total) / total), action) for action in actions)  # UCB
 
             else:
-
+                # choose the nearest blank point
                 border = []
                 if len(blanks) > self.n_in_row:
                     border = self.adjacent(board, state, player, plays)
@@ -106,54 +103,21 @@ class MCTS(object):
                     random = list(set(board.blanks))
                     action = (np.random.choice(random),player)
 
-            next_loc, p = action
-            board.update(player, next_loc)
+            move, p = action
+            board.update(player, move)
 
             # Expand
             # add only one new child node each time
             if expand and (action, state) not in plays:
                 expand = False
                 plays[(action, state)] = 0
-                # Under the board state, reset the number of simulations of the next_loc from players.
+                # Under the board state, reset the number of simulations of the move from players.
                 wins[(action, state)] = 0
-
-                # Under the board state, reset the number of wins of the next_loc from players.
+                # Under the board state, reset the number of wins of the move from players.
 
                 if t > self.max_depth:
                     self.max_depth = t
             state_list.append((action, state))
-            flag=False
-            if flag:
-                DEFAULT_REQUEST_HEADERS = {
-                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-                    'Accept-Encoding': 'gzip, deflate, sdch',
-                    'Accept-Language': 'zh-CN,zh;q=0.8',
-                    'Cache-Control': 'max-age=0',
-                    'Connection': 'keep-alive',
-                    'User-Agent': 'Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.101 Safari/537.36'}
-                l=[1,3,2,5,6,7,5,4,3,7,9]
-                flag = 1
-                for index in range(len(l) - 1, 0, -1):
-                    if flag:
-                        flag = 0
-                        for two_index in range(index):
-                            if l[two_index] > l[two_index + 1]:
-                                l[two_index], l[two_index + 1] = l[two_index + 1], l[two_index]
-                                flag = 1
-                    else:
-                        break
-                print(l)
-
-            # AMAF value
-            # next (action, state) is child node of all previous (action, state) nodes
-            for (m, pp), s in state_list:
-                if (next_loc, s) not in plays_plus:
-                    plays_plus[(next_loc, s)] = 0
-                    wins_plus[(next_loc, s)] = {}
-                    for p in self.turn:
-                        wins_plus[(next_loc, s)][p] = 0
-
-            visited_states.add((action, state))
 
             # If there is no blank location or there is a winner, The game is over,
             full = not len(blanks)
@@ -170,10 +134,6 @@ class MCTS(object):
                 plays[(action, state)] += 1  # all visited moves +1
                 if player == winner and player in action:
                     wins[(action, state)] += 1  # only winner's moves +1
-            for ((m_sub, p), s_sub) in state_list[i:]:
-                plays_plus[(m_sub, state)] += 1  # all child nodes of state
-                if winner in wins_plus[(m_sub, state)]:
-                    wins_plus[(m_sub, state)][winner] += 1  # each node is divided by the player
 
 
     def adjacent(self, board, state, player, plays):
@@ -212,28 +172,10 @@ class MCTS(object):
                 border.add(m - width - 1)  # 1
 
         border = list(set(border) - set(moved))
-        for next_loc in border:
-            if plays.get(((next_loc, player), state)):
-                border.remove(next_loc)
+        for move in border:
+            if plays.get(((move, player), state)):
+                border.remove(move)
         return border
-
-    def quickSort(self,num, l, r):
-        if l >= r:
-            return
-        flag = l
-        for i in range(l + 1, r + 1):
-            if num[flag] > num[i]:
-                tmp = num[i]
-                del num[i]
-                num.insert(flag, tmp)
-                flag += 1
-        self.quickSort(num, l, flag - 1)  
-        self.quickSort(num, flag + 1, r)
-
-    num = [1, -9, 5, 7, 9, 3, 2, 8]
-    quickSort(num, 0, 7)
-    print
-    num
 
     def get_player(self,turn):
         """
@@ -243,22 +185,16 @@ class MCTS(object):
         turn.append(player)
         return player
 
-    def next_loc(self):
+    def move(self):
         """
         Choose the movement with the highest winning rate.
         """
-        percent_wins, next_loc = max(
-            (self.wins.get(((next_loc, self.player), self.board.current_state()), 0) /
-             self.plays.get(((next_loc, self.player), self.board.current_state()), 1),
-             next_loc)
-            for next_loc in self.board.blanks)
-
-        return next_loc
-
-    def getdataset(self):
-        dataset = np.array([[1, 1], [1, 1.2], [1.2, 1.1], [0, 0], [0.1, 0.2], [0.2, 0.3]])
-        labellist = ['A', 'A', 'A', 'B', 'B', 'B']
-
+        percent_wins, move = max(
+            (self.wins.get(((move, self.player), self.board.current_state()), 0) /
+             self.plays.get(((move, self.player), self.board.current_state()), 1),
+             move)
+            for move in self.board.blanks)
+        return move
 
     def delete(self):
         """
@@ -271,11 +207,6 @@ class MCTS(object):
             if len(state) < length + 2:
                 del self.plays[(action, state)]
                 del self.wins[(action, state)]
-        keys = list(self.plays_plus)
-        for m, s in keys:
-            if len(s) < length + 2:
-                del self.plays_plus[(m, s)]
-                del self.wins_plus[(m, s)]
 
     def winner(self,board):
         """
