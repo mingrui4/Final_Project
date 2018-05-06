@@ -28,9 +28,11 @@ Decision making - Each possible solution is given appropriate weight for evaluat
 
 ## Analytical Summary of your findings: (e.g. Did you adjust the scenario based on previous simulation outcomes?  What are the management decisions one could make from your simulation's output, etc.)
 
-(1) When the board was relatively small (6x6) and we ran a four-in-row game, the algorithm had a good performance. However, when we had a relatively big board and ran a five-in-row game, even if we set a smaller calculation time, the algorithm didn't have a good performance. Based on this finding, we decided to choose the game into four-in-row.
+(1) When the board was relatively small (5x5) and we ran a four-in-row game, the algorithm had a good performance. However, when we had a relatively big board, even if we set a smaller calculation time, the algorithm didn't have a good performance. 
 
-(2) If the first step is made by AI, then the player will 100% lose.
+(2) After our experiment, the order of choosing to play as the first or second player doesn't have an obvious effect on the simulation result.
+
+(3) AI doesn't keep winning the game, human players have chances to beat the AI. Possible reason is that the algorithm is not intelligent enough and we didn't have an enough simulation time.
 
 ## Instructions on how to use the program:
 
