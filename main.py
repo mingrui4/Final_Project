@@ -245,6 +245,33 @@ class Game:
                     print('.'.center(8), end='')
             print('\r\n\r\n')
 
+    def draw_board_compare_MCTS(self, board, MCTS1, MCTS2):
+        """
+        Implemented the basic display of the board and moves for the compare.
+        :param board:
+        :param MCTS1:
+        :param MCTS2:
+        :return:
+        """
+        width = board.width
+        height = board.height
+        print("Player 1: MCTS1 AI player -- M \n")
+        print("Player 2: MCTS2 AI player -- N \n")
+        for x in range(width):
+            print("{0:8}".format(x), end='')
+        print('\r\n')
+        for i in range(height - 1, -1, -1):
+            print("{0:4d}".format(i), end='')
+            for j in range(width):
+                position = i * width + j
+                player = board.states.get(position, -1)
+                if player == MCTS2.player:
+                    print('N'.center(8), end='')
+                elif player == MCTS1.player:
+                    print('M'.center(8), end='')
+                else:
+                    print('.'.center(8), end='')
+            print('\r\n\r\n')
 
 
 def board_input():
