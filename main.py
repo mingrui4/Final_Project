@@ -85,6 +85,51 @@ class Game:
                         print("Game end. You Lose!")
                 break
 
+    def compare_game(self):
+        """
+        This function is for comparision of MCTS ai and Random ai
+        :return:
+        """
+        # initialize the player and board
+        play_turn = [1, 2]
+        self.board.init_board()
+
+        ai_M = MCTS(self.board, [1, 2], self.n_in_row, self.time, self.max_iteration, self.model_choice)
+        ai_R = MCTS(self.board, [2, 1], self.n_in_row, self.time, self.max_iteration, model_choice=False)
+        print(ai_M, ai_R)
+
+        players = {}
+        players[1] = ai_M  # store MCTS AI as value in player1
+        players[2] = ai_R  # store Random AI as value in player2
+
+        # implement the basic UI for the board and display the game
+        self.draw_board_compare(self.board, ai_R, ai_M)
+        while True:
+            current_p = play_turn.pop(0)  # get the current player
+            play_turn.append(current_p)
+            player_in_turn = players[current_p]
+
+            # get the actions of the two ai
+            if str(player_in_turn) == 'Random':
+                print('Random turn :')
+                move = player_in_turn.action()
+            else:
+                print('MCTS turn :')
+                move = player_in_turn.action()
+
+            self.board.update(current_p, move)  # update the board
+            self.draw_board_compare(self.board, ai_R, ai_M)  # display the update
+
+            # judge whether to end the game after each step
+            result, winner = self.game_end(ai_M)
+            if result:
+                if winner != -1:
+                    if winner == 1:
+                        print('The winner is: MCTS AI!')
+                    else:
+                        print('The winner is the Random AI!')
+                break
+
     def game_end(self, ai):
         """
         Get the result of the game and the winner.
@@ -127,6 +172,35 @@ class Game:
                     print('.'.center(8), end='')
             print('\r\n\r\n')
 
+    def draw_board_compare(self, board, ai_r, ai_m):
+        """
+        Implemented the basic display of the board and moves for the compare.
+        :param board:
+        :param ai_r:
+        :param ai_m:
+        :return:
+        """
+        width = board.width
+        height = board.height
+        print("Player 1: MCTS AI player -- M \n")
+        print("Player 2: Random AI player -- R \n")
+        for x in range(width):
+            print("{0:8}".format(x), end='')
+        print('\r\n')
+        for i in range(height - 1, -1, -1):
+            print("{0:4d}".format(i), end='')
+            for j in range(width):
+                position = i * width + j
+                player = board.states.get(position, -1)
+                if player == ai_r.player:
+                    print('R'.center(8), end='')
+                elif player == ai_m.player:
+                    print('M'.center(8), end='')
+                else:
+                    print('.'.center(8), end='')
+            print('\r\n\r\n')
+
+
 
 def board_input():
     """
@@ -140,10 +214,26 @@ def board_input():
         return board_width
     return int(board_width)
 
+def compare_input():
+    compare = input("Do you want to compare MCTS and Random? (y/n) \n")
+
+    return compare
 
 if __name__ == '__main__':
 
     print("Welcome to Four-In-Row!")
+    compare = compare_input()
+    while compare.lower() == 'y':
+        width = board_input()
+        height = width
+        n_in_row = 4
+        # start the game
+        game_board = Board(width, height, n_in_row)
+        game = Game(game_board)
+        game.compare_game()
+        compare = 'n'
+
+    print('Now start your own game!')
     # init the the game board with width and height
     width = board_input()
     height = width

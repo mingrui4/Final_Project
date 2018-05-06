@@ -228,4 +228,7 @@ class MCTS(object):
         return False, -1
 
     def __str__(self):
-        return "AI"
+        if self.model_choice:
+            return "AI"
+        else:
+            return "Random"
