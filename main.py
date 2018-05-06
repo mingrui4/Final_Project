@@ -96,7 +96,7 @@ class Game:
 
         ai_M = MCTS(self.board, [1, 2], self.n_in_row, self.time, self.max_iteration, self.model_choice)
         ai_R = MCTS(self.board, [2, 1], self.n_in_row, self.time, self.max_iteration, model_choice=False)
-        print(ai_M, ai_R)
+        print(ai_M, " vs ", ai_R)
 
         players = {}
         players[1] = ai_M  # store MCTS AI as value in player1
