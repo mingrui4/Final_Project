@@ -287,7 +287,10 @@ def board_input():
     return int(board_width)
 
 def compare_input():
-    compare = input("Do you want to compare MCTS and Random? (y/n) \n")
+    compare = input("a. Do you want to compare MCTS and Random? \n"
+                    "b. Do you want to compare two MCTS AI? \n"
+                    "c. Start Your Own Game \n"
+                    "Please choose (a/b/c) \n")
 
     return compare
 
