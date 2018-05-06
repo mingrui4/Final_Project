@@ -36,7 +36,11 @@ Decision making - Each possible solution is given appropriate weight for evaluat
 
 ## Instructions on how to use the program:
 
-Run main.py, then there will be a board shows in the run window, choose which one to move the stone first, the player or AI. For the player, input a tuple like (1,1) to put the stone. Then move the stone one by one.The winner will be the one who first has four stones in a row. If there is no place to put a new stone, the game will be draw.
+(1)Run main.py, there will be instructions in the run window. We have three choices: MCTS vs Random Simulation, MCTS vs MCTS, or play own game. 
+(2)If you choose MCTS vs Random Simulation or MCTS vs MCTS, it will ask you to determine the size of the board and it must be larger than 4 * 4. Then the prgram will run automatically and you can see the result.
+(3)If you choose to play your own game, it will first ask you to determine the size of the board and then decide whether to be the first player.
+(4)For each turn of the human player, please input a number pair as the position of the stone, such as 2,3.
+(5)The winner will be the one who first has four stones in a row. If there is no place to put a new stone, the game will be draw.
 
 ## All Sources Used:
 
