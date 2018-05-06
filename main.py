@@ -85,7 +85,7 @@ class Game:
                         print("Game end. You Lose!")
                 break
 
-    def compare_game(self):
+    def compare_MCTS_Random(self):
         """
         This function is for comparision of MCTS ai and Random ai
         :return:
@@ -129,6 +129,51 @@ class Game:
                     else:
                         print('The winner is the Random AI!')
                 break
+
+
+    def compare_MCTS(self):
+
+        play_turn = [1, 2]
+        self.board.init_board()
+
+        MCTS1 = MCTS(self.board, [1, 2], self.n_in_row, self.time, self.max_iteration, self.model_choice)
+        MCTS2 = MCTS(self.board, [2, 1], self.n_in_row, self.time, self.max_iteration, self.model_choice)
+        print(MCTS1, " vs ", MCTS2)
+
+        players = {}
+        players[1] = MCTS1  # store MCTS AI as value in player1
+        players[2] = MCTS2  # store Random AI as value in player2
+
+        # implement the basic UI for the board and display the game
+        self.draw_board_compare_MCTS(self.board, MCTS1, MCTS2)
+        i = 0
+        while True:
+            current_p = play_turn.pop(0)  # get the current player
+            play_turn.append(current_p)
+            player_in_turn = players[current_p]
+            # get the actions of the two ai
+            if i % 2 == 0:
+                print('MCTS1 turn :')
+                move = player_in_turn.action()
+                i = i + 1
+            else:
+                print('MCTS2 turn :')
+                move = player_in_turn.action()
+                i = i + 1
+
+            self.board.update(current_p, move)  # update the board
+            self.draw_board_compare_MCTS(self.board, MCTS1, MCTS2)  # display the update
+
+            # judge whether to end the game after each step
+            result, winner = self.game_end(MCTS1)
+            if result:
+                if winner != -1:
+                    if winner == 1:
+                        print('The winner is MCTS1!')
+                    else:
+                        print('The winner is MCTS2!')
+                break
+
 
     def game_end(self, ai):
         """
@@ -230,7 +275,7 @@ if __name__ == '__main__':
         # start the game
         game_board = Board(width, height, n_in_row)
         game = Game(game_board)
-        game.compare_game()
+        game.compare_MCTS_Random()
         compare = 'n'
 
     print('Now start your own game!')
