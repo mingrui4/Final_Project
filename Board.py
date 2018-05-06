@@ -3,6 +3,7 @@
     Create a board to play the game. Via data from Player.py and MCTS.py to put the stone.
 """
 
+
 class Board(object):
 
     def __init__(self, width=6, height=6, n_in_row=4):

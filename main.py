@@ -8,6 +8,7 @@ from Player import Player
 from MCTS import MCTS
 from Board import Board
 
+
 class Game:
     def __init__(self, board, n_in_row=4, time=5.0, max_iteration=1000, model_choice=True):
         """
@@ -151,7 +152,6 @@ if __name__ == '__main__':
     game_board = Board(width, height, n_in_row)
     game = Game(game_board)
     game.init_game()
-
 
 
 

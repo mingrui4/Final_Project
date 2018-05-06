@@ -7,6 +7,8 @@
 import numpy as np
 import time
 import copy
+
+
 class MCTS(object):
     def __init__(self, board, turn, n_in_row=4, time=5.0, max_actions=1000, model_choice = True):
         self.board = board
@@ -47,6 +49,7 @@ class MCTS(object):
 
 
             precent_wins,move = self.move() # choose the best method to move
+            precent_wins = round(precent_wins, 5)
             location = self.board.stone_to_position(move)
 
             print("AI puts stone on position: %d,%d" % (location[0], location[1]))
@@ -93,7 +96,7 @@ class MCTS(object):
 
                 if len(border):
                     move = np.random.choice(border)
-                # if do not have adajacents,choice a blank randomly
+                # if do not have adjacent,choose a blank randomly
                 else:
                     random = list(set(board.blanks))
                     move = np.random.choice(random)
@@ -122,12 +125,11 @@ class MCTS(object):
             player = self.get_player(turn)
 
         # Back-propagation
-        for i,(player, move) in enumerate(state_list):
+        for i, (player, move) in enumerate(state_list):
             if (player, move) in plays:
                 plays[(player, move)] += 1 # all visited moves +1
                 if player == winner:
                     wins[(player, move)] += 1 # only winner's moves +1
-
 
     def adjacent(self, board, player, plays):
         """
@@ -170,7 +172,7 @@ class MCTS(object):
                 border.remove(move)
         return border
 
-    def get_player(self,turn):
+    def get_player(self, turn):
         """
         get players by turn here
         """
@@ -185,16 +187,16 @@ class MCTS(object):
 
         percent_wins, move = max(
             (self.wins.get((self.player, move), 0) /
-             self.plays.get((self.player, move), 1),move)
+             self.plays.get((self.player, move), 1), move)
             for move in self.board.blanks)
-        return percent_wins,move
-
+        return percent_wins, move
 
     def winner(self,board):
         """
         judge whether there be a winner
         """
         moved = list(set(range(board.width * board.height)) - set(board.blanks))
+
         if len(moved) < self.n_in_row + 2:
             return False, -1
 

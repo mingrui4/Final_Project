@@ -3,6 +3,7 @@
     This class defines the operation for human players, including movement of the stone.
 """
 
+
 class Player(object):
 
     def __init__(self, board, player):
