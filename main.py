@@ -298,17 +298,27 @@ if __name__ == '__main__':
 
     print("Welcome to Four-In-Row!")
     compare = compare_input()
-    while compare.lower() == 'y':
-        width = board_input()
-        height = width
-        n_in_row = 4
-        # start the game
-        game_board = Board(width, height, n_in_row)
-        game = Game(game_board)
-        game.compare_MCTS_Random()
-        compare = 'n'
+    while compare.lower() == 'a' or compare.lower() == 'b':
+        if compare.lower() == 'a':
+            width = board_input()
+            height = width
+            n_in_row = 4
+            # start the game
+            game_board = Board(width, height, n_in_row)
+            game = Game(game_board)
+            game.compare_MCTS_Random()
+            compare = 'c'
+        elif compare.lower() == 'b':
+            width = board_input()
+            height = width
+            n_in_row = 4
+            # start the game
+            game_board = Board(width, height, n_in_row)
+            game = Game(game_board)
+            game.compare_MCTS()
+            compare = 'c'
 
-    print('Now start your own game!')
+    print('\nNow start your own game!')
     # init the the game board with width and height
     width = board_input()
     height = width
@@ -317,7 +327,6 @@ if __name__ == '__main__':
     game_board = Board(width, height, n_in_row)
     game = Game(game_board)
     game.init_game()
-
 
 
 
