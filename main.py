@@ -291,8 +291,13 @@ def compare_input():
                     "b. Do you want to compare two MCTS AI? \n"
                     "c. Start Your Own Game \n"
                     "Please choose (a/b/c) \n")
+    if compare == 'a' or compare == 'b' or compare =='c':
+        return compare
+    else:
+        print("Invalid input! Please enter again!")
+        compare = compare_input()
+        return compare
 
-    return compare
 
 if __name__ == '__main__':
 
